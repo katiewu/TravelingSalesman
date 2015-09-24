@@ -1,17 +1,21 @@
 package edu.upenn.cis573.travelingsalesman;
 
-import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.util.Log;
 import android.widget.Toast;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 
 public class GameView extends View {
@@ -81,7 +85,8 @@ public class GameView extends View {
     }
 
     protected void init() {
-        spinnerNum = MainActivity.numLocations;
+        GameActivity activity = (GameActivity)getContext();
+        spinnerNum = activity.getNumLocations();
 
         setBackgroundResource(R.drawable.campus);
 
@@ -89,7 +94,7 @@ public class GameView extends View {
 
         mapPoints = new Point[spinnerNum];
 
-        // yeah, I don't know what's going on here
+        // This selects several locations randomly into an array, which size is spinnerNum.
         Set set = new HashSet();
         Random rn = new Random();
         for (int i = 0; i < spinnerNum; i++) {

@@ -9,10 +9,17 @@ import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
+    private int numLocations;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.numLocations = getIntent().getIntExtra("numLocations", 4);
         setContentView(R.layout.play_game);
+    }
+
+    public int getNumLocations(){
+        return numLocations;
     }
 
 

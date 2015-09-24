@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 public class MainActivity extends Activity implements OnItemSelectedListener {
 
     // represents the number of locations in the game map
-    protected static int numLocations = 4;
+    private int numLocations = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
      */
     public void onButtonClick(View button) {
         Intent i = new Intent(this, GameActivity.class);
+        i.putExtra("numLocations", numLocations);
         startActivity(i);
     }
 
