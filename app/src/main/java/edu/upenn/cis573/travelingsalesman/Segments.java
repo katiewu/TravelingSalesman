@@ -10,12 +10,12 @@ import java.util.HashMap;
 /**
  * Created by Jingyuan on 9/24/15.
  */
-public class Segment {
+public class Segments {
 
     private ArrayList<Point[]> segments;
     private Paint paint;
 
-    public Segment(){
+    public Segments(){
         segments = new ArrayList<Point[]>();
         paint = new Paint();
     }

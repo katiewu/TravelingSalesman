@@ -49,7 +49,7 @@ public class GameActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.menu_undo) {
             GameView gv = (GameView)findViewById(R.id.gameView);
-            if(gv.segmentSize() > 0){
+            if(gv.segmentsSize() > 0){
                 gv.removeLastSegment();
             }
             else {

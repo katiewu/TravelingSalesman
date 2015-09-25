@@ -23,10 +23,9 @@ public class GameView extends View {
 //    protected ArrayList<Integer> yCoords = new ArrayList<Integer>();
 
 //    protected ArrayList<Point> points = new ArrayList<Point>();
-
     protected Stroke stroke = new Stroke();
 
-    protected Segment segment = new Segment();
+    protected Segments segments = new Segments();
 
 //    protected ArrayList<Point[]> segments = new ArrayList<Point[]>();
     private Point firstPoint;
@@ -114,15 +113,15 @@ public class GameView extends View {
 
 
     public void clearSegments(){
-        segment.clear();
+        segments.clear();
     }
 
-    public int segmentSize(){
-        return segment.size();
+    public int segmentsSize(){
+        return segments.size();
     }
 
     public void removeLastSegment(){
-        segment.removeLast();
+        segments.removeLast();
     }
 
     /*
@@ -148,7 +147,7 @@ public class GameView extends View {
 //        }
 
         // draws the line segments
-        segment.draw(Color.RED, 10, canvas);
+        segments.draw(Color.RED, 10, canvas);
 //        for (int i = 0; i < segments.size(); i++) {
 //            Point[] points = segments.get(i);
 //            paint.setColor(Color.RED);
@@ -166,7 +165,7 @@ public class GameView extends View {
         }
 
         // detects whether the segments form a circuit - but there's a bug!
-        boolean isCircuit = segment.isCircuit();
+        boolean isCircuit = segments.isCircuit();
 //        boolean isCircuit = true;
 //        HashMap<Point, Integer> connections = new HashMap<Point, Integer>();
 //        for (Point[] pair : segments) {
@@ -198,11 +197,11 @@ public class GameView extends View {
 
 
         // see if user has solved the problem
-        if ((segment.size() == mapPoints.length) && isCircuit) {
+        if ((segments.size() == mapPoints.length) && isCircuit) {
             ArrayList<Point> shortestPath = ShortestPath.shortestPath(mapPoints);
             double shortestPathLength = calculatePathDistance(shortestPath);
 
-            double myPathLength = segment.calculateSegment();
+            double myPathLength = segments.calculateSegment();
 
             Log.v("RESULT", "Shortest path length is " + shortestPathLength + "; my path is " + myPathLength);
 
@@ -241,7 +240,7 @@ public class GameView extends View {
                 }
             }
         }
-        else if (segment.size() == mapPoints.length && !isCircuit) {
+        else if (segments.size() == mapPoints.length && !isCircuit) {
             Toast.makeText(getContext(), "That's not a circuit! Select Clear from the menu and start over", Toast.LENGTH_LONG).show();
         }
 
@@ -300,7 +299,7 @@ public class GameView extends View {
                         Point[] points = {firstPoint, p};
 
                         if (firstPoint.x != p.x && firstPoint.y != p.y) {
-                            segment.add(points);
+                            segments.add(points);
 //                            segments.add(points);
                         }
                         break;
