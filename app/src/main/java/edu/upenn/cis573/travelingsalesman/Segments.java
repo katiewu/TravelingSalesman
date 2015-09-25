@@ -6,26 +6,27 @@ import android.graphics.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by Jingyuan on 9/24/15.
  */
 public class Segments {
 
-    private ArrayList<Point[]> segments;
+    private ArrayList<LineSegment> segments;
     private Paint paint;
 
     public Segments(){
-        segments = new ArrayList<Point[]>();
+        segments = new ArrayList<LineSegment>();
         paint = new Paint();
     }
 
     public void draw(int color, int width, Canvas canvas){
         for (int i = 0; i < segments.size(); i++) {
-            Point[] points = segments.get(i);
+            LineSegment points = segments.get(i);
             paint.setColor(color);
             paint.setStrokeWidth(width);
-            canvas.drawLine(points[0].x, points[0].y, points[1].x, points[1].y, paint);
+            canvas.drawLine(points.getStart().x, points.getStart().y, points.getEnd().x, points.getEnd().y, paint);
         }
     }
 
@@ -41,15 +42,15 @@ public class Segments {
         segments.remove(size() - 1);
     }
 
-    public void add(Point[] points){
-        segments.add(points);
+    public void add(LineSegment lineSegment){
+        segments.add(lineSegment);
     }
 
     public boolean isCircuit(){
         HashMap<Point, Integer> connections = new HashMap<Point, Integer>();
-        for (Point[] pair : segments) {
-            Point p1 = pair[0];
-            Point p2 = pair[1];
+        for (LineSegment line : segments) {
+            Point p1 = line.getStart();
+            Point p2 = line.getEnd();
             Integer value = connections.get(p1);
             if (value == null)
                 value = 0;
@@ -72,18 +73,41 @@ public class Segments {
                 }
             }
         }
+
+        HashSet<Integer> set = new HashSet<Integer>();
+        Point start = segments.get(0).getStart();
+        Point end = segments.get(0).getEnd();
+        set.add(0);
+        while(true){
+            start = end;
+            end = null;
+            for(int i=0;i<segments.size();i++)
+            {
+                if(set.contains(i)) continue;
+                else{
+                    LineSegment line = segments.get(i);
+                    if(line.getStart().equals(start)){
+                        end = line.getEnd();
+                        set.add(i);
+                        break;
+                    }
+                    else if(line.getEnd().equals(start)){
+                        end = line.getStart();
+                        set.add(i);
+                        break;
+                    }
+                }
+            }
+            if(end == null) break;
+        }
+        if(set.size() != segments.size()) return false;
         return true;
     }
 
     public double calculateSegment(){
         double myPathLength = 0;
-        for (Point[] pair : segments) {
-            Point p1 = pair[0];
-            Point p2 = pair[1];
-            double dx = p1.x - p2.x;
-            double dy = p1.y - p2.y;
-            double dist = Math.sqrt(dx * dx + dy * dy);
-            myPathLength += dist;
+        for (LineSegment pair : segments) {
+            myPathLength += LineSegment.distance(pair.getStart(), pair.getEnd());
         }
         return myPathLength;
     }

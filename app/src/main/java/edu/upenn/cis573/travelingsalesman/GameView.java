@@ -70,18 +70,14 @@ public class GameView extends View {
         for (int i = 0; i < points.size()-1; i++) {
             Point p1 = points.get(i);
             Point p2 = points.get(i+1);
-            double dx = p1.x - p2.x;
-            double dy = p1.y - p2.y;
-            double dist = Math.sqrt(dx*dx + dy*dy);
+            double dist = LineSegment.distance(p1, p2);
             total += dist;
         }
 
         // then need to go back to the beginning
         Point p1 = points.get(points.size()-1);
         Point p2 = points.get(0);
-        double dx = p1.x - p2.x;
-        double dy = p1.y - p2.y;
-        double dist = Math.sqrt(dx*dx + dy*dy);
+        double dist = LineSegment.distance(p1, p2);
         total += dist;
 
         return total;
@@ -257,9 +253,10 @@ public class GameView extends View {
         if(event.getAction() == MotionEvent.ACTION_DOWN){
 
             for (int i = 0; i < mapPoints.length; i++) {
-                double dx = p.x - mapPoints[i].x;
-                double dy = p.y - mapPoints[i].y;
-                double dist = Math.sqrt(dx*dx + dy*dy);
+//                double dx = p.x - mapPoints[i].x;
+//                double dy = p.y - mapPoints[i].y;
+//                double dist = Math.sqrt(dx*dx + dy*dy);
+                double dist = LineSegment.distance(p, mapPoints[i]);
                 if (dist < 30) {
                     // the "+10" part is a bit of a fudge factor because the point itself is the
                     // upper-left corner of the little red box but we want the center
@@ -289,17 +286,18 @@ public class GameView extends View {
 //                points.clear();
                 // only add the segment if the release point is within 30 of any of the other points
                 for (int i = 0; i < mapPoints.length; i++) {
-                    double dx = p.x - mapPoints[i].x;
-                    double dy = p.y - mapPoints[i].y;
-                    double dist = Math.sqrt(dx * dx + dy * dy);
-
+//                    double dx = p.x - mapPoints[i].x;
+//                    double dy = p.y - mapPoints[i].y;
+//                    double dist = Math.sqrt(dx * dx + dy * dy);
+                    double dist = LineSegment.distance(p, mapPoints[i]);
                     if (dist < 30) {
                         p.x = mapPoints[i].x + 10;
                         p.y = mapPoints[i].y + 10;
                         Point[] points = {firstPoint, p};
 
                         if (firstPoint.x != p.x && firstPoint.y != p.y) {
-                            segments.add(points);
+                            LineSegment line = new LineSegment(firstPoint, p);
+                            segments.add(line);
 //                            segments.add(points);
                         }
                         break;
