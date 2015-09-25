@@ -293,7 +293,6 @@ public class GameView extends View {
                     if (dist < 30) {
                         p.x = mapPoints[i].x + 10;
                         p.y = mapPoints[i].y + 10;
-                        Point[] points = {firstPoint, p};
 
                         if (firstPoint.x != p.x && firstPoint.y != p.y) {
                             LineSegment line = new LineSegment(firstPoint, p);

@@ -25,18 +25,20 @@ public class ShortestPath {
             for (int i = 0; i < p.size() - 1; i++) {
                 Point p1 = points[p.get(i)];
                 Point p2 = points[p.get(i + 1)];
-                double dx = p1.x - p2.x;
-                double dy = p1.y - p2.y;
-                double dist = Math.sqrt(dx * dx + dy * dy);
+//                double dx = p1.x - p2.x;
+//                double dy = p1.y - p2.y;
+//                double dist = Math.sqrt(dx * dx + dy * dy);
+                double dist = LineSegment.distance(p1, p2);
                 total += dist;
             }
 
             // then need to go back to the beginning
             Point p1 = points[p.get(p.size() - 1)];
             Point p2 = points[p.get(0)];
-            double dx = p1.x - p2.x;
-            double dy = p1.y - p2.y;
-            double dist = Math.sqrt(dx * dx + dy * dy);
+//            double dx = p1.x - p2.x;
+//            double dy = p1.y - p2.y;
+//            double dist = Math.sqrt(dx * dx + dy * dy);
+            double dist = LineSegment.distance(p1, p2);
             total += dist;
 
             // see if this is the shortest  so far
