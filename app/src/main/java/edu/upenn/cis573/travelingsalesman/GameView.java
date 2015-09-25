@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -23,11 +22,13 @@ public class GameView extends View {
 //    protected ArrayList<Integer> xCoords = new ArrayList<Integer>();
 //    protected ArrayList<Integer> yCoords = new ArrayList<Integer>();
 
-    protected ArrayList<Point> points = new ArrayList<Point>();
+//    protected ArrayList<Point> points = new ArrayList<Point>();
 
     protected Stroke stroke = new Stroke();
 
-    protected ArrayList<Point[]> segments = new ArrayList<Point[]>();
+    protected Segment segment = new Segment();
+
+//    protected ArrayList<Point[]> segments = new ArrayList<Point[]>();
     private Point firstPoint;
     protected Point[] mapPoints;
     protected int spinnerNum;
@@ -111,6 +112,19 @@ public class GameView extends View {
         }
     }
 
+
+    public void clearSegments(){
+        segment.clear();
+    }
+
+    public int segmentSize(){
+        return segment.size();
+    }
+
+    public void removeLastSegment(){
+        segment.removeLast();
+    }
+
     /*
      * This method is automatically invoked when the View is displayed.
      * It is also called after you call "invalidate" on this object.
@@ -134,12 +148,13 @@ public class GameView extends View {
 //        }
 
         // draws the line segments
-        for (int i = 0; i < segments.size(); i++) {
-            Point[] points = segments.get(i);
-            paint.setColor(Color.RED);
-            paint.setStrokeWidth(10);
-            canvas.drawLine(points[0].x, points[0].y, points[1].x, points[1].y, paint);
-        }
+        segment.draw(Color.RED, 10, canvas);
+//        for (int i = 0; i < segments.size(); i++) {
+//            Point[] points = segments.get(i);
+//            paint.setColor(Color.RED);
+//            paint.setStrokeWidth(10);
+//            canvas.drawLine(points[0].x, points[0].y, points[1].x, points[1].y, paint);
+//        }
 
         // draws the points on the map
         paint.setColor(Color.RED);
@@ -151,50 +166,43 @@ public class GameView extends View {
         }
 
         // detects whether the segments form a circuit - but there's a bug!
-        boolean isCircuit = true;
-        HashMap<Point, Integer> connections = new HashMap<Point, Integer>();
-        for (Point[] pair : segments) {
-            Point p1 = pair[0];
-            Point p2 = pair[1];
-            Integer value = connections.get(p1);
-            if (value == null)
-                value = 0;
-            value++;
-            connections.put(p1, value);
-
-            value = connections.get(p2);
-            if (value == null)
-                value = 0;
-            value++;
-            connections.put(p2, value);
-        }
-
-        if (segments.size() == 0) {
-            isCircuit = false;
-        } else {
-            for (int v : connections.values()) {
-                if (v != 2) {
-                    isCircuit = false;
-                    break;
-                }
-            }
-        }
+        boolean isCircuit = segment.isCircuit();
+//        boolean isCircuit = true;
+//        HashMap<Point, Integer> connections = new HashMap<Point, Integer>();
+//        for (Point[] pair : segments) {
+//            Point p1 = pair[0];
+//            Point p2 = pair[1];
+//            Integer value = connections.get(p1);
+//            if (value == null)
+//                value = 0;
+//            value++;
+//            connections.put(p1, value);
+//
+//            value = connections.get(p2);
+//            if (value == null)
+//                value = 0;
+//            value++;
+//            connections.put(p2, value);
+//        }
+//
+//        if (segment.size() == 0) {
+//            isCircuit = false;
+//        } else {
+//            for (int v : connections.values()) {
+//                if (v != 2) {
+//                    isCircuit = false;
+//                    break;
+//                }
+//            }
+//        }
 
 
         // see if user has solved the problem
-        if ((segments.size() == mapPoints.length) && isCircuit) {
+        if ((segment.size() == mapPoints.length) && isCircuit) {
             ArrayList<Point> shortestPath = ShortestPath.shortestPath(mapPoints);
             double shortestPathLength = calculatePathDistance(shortestPath);
 
-            double myPathLength = 0;
-            for (Point[] pair : segments) {
-                Point p1 = pair[0];
-                Point p2 = pair[1];
-                double dx = p1.x - p2.x;
-                double dy = p1.y - p2.y;
-                double dist = Math.sqrt(dx * dx + dy * dy);
-                myPathLength += dist;
-            }
+            double myPathLength = segment.calculateSegment();
 
             Log.v("RESULT", "Shortest path length is " + shortestPathLength + "; my path is " + myPathLength);
 
@@ -233,7 +241,7 @@ public class GameView extends View {
                 }
             }
         }
-        else if (segments.size() == mapPoints.length && !isCircuit) {
+        else if (segment.size() == mapPoints.length && !isCircuit) {
             Toast.makeText(getContext(), "That's not a circuit! Select Clear from the menu and start over", Toast.LENGTH_LONG).show();
         }
 
@@ -292,7 +300,8 @@ public class GameView extends View {
                         Point[] points = {firstPoint, p};
 
                         if (firstPoint.x != p.x && firstPoint.y != p.y) {
-                            segments.add(points);
+                            segment.add(points);
+//                            segments.add(points);
                         }
                         break;
                     }

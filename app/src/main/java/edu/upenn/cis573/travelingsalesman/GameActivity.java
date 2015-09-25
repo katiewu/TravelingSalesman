@@ -1,13 +1,13 @@
 package edu.upenn.cis573.travelingsalesman;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 
-public class GameActivity extends Activity {
+public class GameActivity extends ActionBarActivity {
 
     private int numLocations;
 
@@ -39,7 +39,8 @@ public class GameActivity extends Activity {
 
         if (id == R.id.menu_clear) {
             GameView gv = (GameView)findViewById(R.id.gameView);
-            gv.segments.clear();
+//            gv.segments.clear();
+            gv.clearSegments();
             gv.invalidate();
             return true;
         }
@@ -48,9 +49,10 @@ public class GameActivity extends Activity {
             return true;
         } else if (id == R.id.menu_undo) {
             GameView gv = (GameView)findViewById(R.id.gameView);
-            if (gv.segments.size() > 0) {
-                gv.segments.remove(gv.segments.get(gv.segments.size() - 1));
-            } else {
+            if(gv.segmentSize() > 0){
+                gv.removeLastSegment();
+            }
+            else {
                 Toast.makeText(gv.getContext(), "There's nothing to undo.", Toast.LENGTH_LONG).show();
             }
             gv.invalidate();
